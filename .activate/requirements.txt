@@ -2,10 +2,14 @@
 requests
 beautifulsoup4
 pandas
+
 # pdf parsing/handling
 pypdf
+
 # image proccessing/conversion/support
 pillow
 cairosvg
+
 # terminal formatting
 rich
+alive-progress 
