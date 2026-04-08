@@ -2,6 +2,12 @@ $ErrorActionPreference = 'Stop'
 
 Write-Host ''
 
+# Get script directory
+$scriptDir = $PSScriptRoot
+$venvPath = Join-Path $scriptDir '.venv'
+$activateScript = Join-Path $venvPath 'Scripts\Activate.ps1'
+$requirementsPath = Join-Path $scriptDir 'requirements.txt'
+
 # Python check
 if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
     Write-Host 'Python not found. Please install to continue.' -ForegroundColor Red
@@ -11,48 +17,48 @@ else {
     Write-Host 'Python found' -ForegroundColor Green
 }
 
-# Virtual Environment path creation/check
-if (-not (Test-Path '../.venv')) {
-    Write-Host 'Virtual environment path not found, creating now...' -ForegroundColor Yellow
-    python -m venv ../.venv
+# Virtual Environment creation/check
+if (-not (Test-Path $venvPath)) {
+    Write-Host 'Virtual environment not found, creating now...' -ForegroundColor Yellow
+    python -m venv $venvPath
 }
 else {
-    Write-Host 'Virtual environment path found' -ForegroundColor Green
+    Write-Host 'Virtual environment found' -ForegroundColor Green
 }
 
-# Verify: Virtual Environment path creation/check
-if (-not (Test-Path '../.venv')) {
-    Write-Host 'Virtual environment path failed to create normally.' -ForegroundColor Red
+# Verify venv exists
+if (-not (Test-Path $venvPath)) {
+    Write-Host 'Virtual environment failed to create.' -ForegroundColor Red
     exit 1
 }
 
-# Virtual environment activation/check
+# Activate venv
 if (!$env:VIRTUAL_ENV) {
     Write-Host 'Activating virtual environment...' -ForegroundColor Green
-    & ..\.venv\Scripts\Activate.ps1
+    & $activateScript
 }
 else {
     Write-Host 'Virtual environment already activated' -ForegroundColor Green
 }
 
-# Verify: Virtual environment activation/check
+# Verify activation
 if (!$env:VIRTUAL_ENV) {
     Write-Host 'Virtual environment failed to activate.' -ForegroundColor Red
     exit 1
 }
 
-# Verify: Requirements file check
-if (!(Test-Path '../requirements.txt')) {
+# Requirements check
+if (!(Test-Path $requirementsPath)) {
     Write-Host 'requirements.txt not found' -ForegroundColor Red
     exit 1
 }
 
-# Installs
+# Install dependencies
 Write-Host 'Installing dependencies...' -ForegroundColor Green
 Write-Host ''
 
 python -m pip install --upgrade pip
-python -m pip install -r ../requirements.txt
+python -m pip install -r $requirementsPath
 
 Write-Host ''
 
