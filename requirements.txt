@@ -2,9 +2,7 @@
 requests
 beautifulsoup4
 pandas
-
 # pdf parsing/handling
 pypdf
-
 # terminal formatting
 rich
